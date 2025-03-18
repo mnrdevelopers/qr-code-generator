@@ -191,8 +191,8 @@ button:disabled {
   height: 90%;
   filter: blur(2px); /* Add blur effect */
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 10px;
+  left: 10px;
 }
 
 /* Actual QR Code */
