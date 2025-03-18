@@ -189,7 +189,7 @@ button:disabled {
 .dummy-qr {
   width: 100%;
   height: 100%;
-  filter: blur(5px); /* Add blur effect */
+  filter: blur(2px); /* Add blur effect */
   position: absolute;
   top: 0;
   left: 0;
