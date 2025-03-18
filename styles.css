@@ -187,8 +187,8 @@ button:disabled {
 
 /* Dummy QR Code */
 .dummy-qr {
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
   filter: blur(2px); /* Add blur effect */
   position: absolute;
   top: 0;
