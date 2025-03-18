@@ -78,7 +78,7 @@ button:hover {
 }
 
 #upload-btn {
-  background: #28a745;
+  background: black;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -89,5 +89,6 @@ button:hover {
 }
 
 #upload-btn:hover {
-  background: #218838;
+  background: white;
+  color: black;
 }
