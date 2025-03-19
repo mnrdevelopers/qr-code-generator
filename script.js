@@ -178,5 +178,5 @@ document.getElementById('generate-btn').addEventListener('click', function () {
 
     // Re-enable the generate button
     document.getElementById('generate-btn').disabled = false;
-  }, 5000); // 5-second delay for the scanning animation
+  }, 3000); // 3-second delay for the scanning animation
 });
