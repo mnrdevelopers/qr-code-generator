@@ -162,8 +162,8 @@ button:disabled {
   height: 85%;
   filter: blur(0px); /* Add blur effect */
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 18px;
+  left: 18px;
 }
 
 /* Actual QR Code */
@@ -258,6 +258,6 @@ button:disabled {
 
 /* Hide the scanning animation when not active */
 #scanning-animation.hidden {
-  display: none;
+  display: block;
 }
 }
