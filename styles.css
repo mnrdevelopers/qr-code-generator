@@ -141,36 +141,6 @@ button:disabled {
   color: #666;
 }
 
-.popular-logos {
-  margin-top: 10px;
-}
-
-.popular-logos p {
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 14px;
-}
-
-.logo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.logo-item {
-  background: #f0f0f0;
-  padding: 15px;
-  border-radius: 5px;
-  text-align: center;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  font-size: 24px;
-}
-
-.logo-item:hover {
-  background: #ddd;
-}
-
 /* QR Code Container */
 .qr-code-container {
   display: flex;
