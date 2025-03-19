@@ -1,4 +1,34 @@
-document.getElementById('generate-btn').addEventListener('click', function () {
+document.getElementById('upload-btn').addEventListener('click', function () {
+  document.getElementById('logo-upload').click();
+});
+
+document.getElementById('logo-upload').addEventListener('change', function (event) {
+  const file = event.target.files[0];
+  const fileName = document.getElementById('file-name');
+  if (file && file.type.startsWith('image/')) {
+    fileName.textContent = file.name;
+  } else {
+    fileName.textContent = 'No file chosen';
+    alert('Please upload a valid image file.');
+  }
+});
+
+// Automatically generate QR code when input changes
+document.getElementById('qr-input').addEventListener('input', function () {
+  generateQRCode();
+});
+
+// Automatically generate QR code when color changes
+document.getElementById('color-picker').addEventListener('change', function () {
+  generateQRCode();
+});
+
+// Automatically generate QR code when logo is uploaded
+document.getElementById('logo-upload').addEventListener('change', function () {
+  generateQRCode();
+});
+
+function generateQRCode() {
   const input = document.getElementById('qr-input').value;
   const qrCodeDiv = document.getElementById('qr-code');
   const dummyQr = document.querySelector('.dummy-qr');
@@ -9,7 +39,11 @@ document.getElementById('generate-btn').addEventListener('click', function () {
   const scanningAnimation = document.getElementById('scanning-animation');
 
   if (input.trim() === '') {
-    alert('Please enter text or a URL.');
+    // Clear the QR code if input is empty
+    qrCodeDiv.innerHTML = '';
+    dummyQr.style.display = 'block';
+    downloadBtn.disabled = true;
+    shareBtn.disabled = true;
     return;
   }
 
@@ -21,9 +55,6 @@ document.getElementById('generate-btn').addEventListener('click', function () {
 
   // Show the scanning animation
   scanningAnimation.style.opacity = '1';
-
-  // Disable the generate button during the animation
-  this.disabled = true;
 
   // Wait for 5 seconds to simulate scanning
   setTimeout(() => {
@@ -130,8 +161,5 @@ document.getElementById('generate-btn').addEventListener('click', function () {
         }
       }
     }, 100); // Delay to ensure QR code is rendered
-
-    // Re-enable the generate button
-    document.getElementById('generate-btn').disabled = false;
-  }, 3000); // 3-second delay for the scanning animation
-});
+  }, 5000); // 5-second delay for the scanning animation
+}
