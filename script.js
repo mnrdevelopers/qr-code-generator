@@ -52,7 +52,7 @@ document.getElementById('generate-btn').addEventListener('click', function () {
         // Draw QR code on canvas
         ctx.drawImage(qrImage, 0, 0, 200, 200);
 
-        // Load logo (either uploaded file or selected popular logo)
+        // Load logo (uploaded file)
         if (logoFile) {
           const logo = new Image();
           logo.src = URL.createObjectURL(logoFile);
@@ -97,51 +97,6 @@ document.getElementById('generate-btn').addEventListener('click', function () {
                 }
               });
             };
-          };
-        } else if (selectedLogo) {
-          // Use FontAwesome icon as the logo
-          const logoSize = 40; // Logo size is 20% of QR code size (200 * 0.2 = 40)
-          const logoX = (200 - logoSize) / 2;
-          const logoY = (200 - logoSize) / 2;
-
-          // Draw FontAwesome icon on canvas
-          ctx.font = `${logoSize}px FontAwesome`;
-          ctx.fillStyle = getLogoColor(selectedLogo); // Use the logo's color
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(getFontAwesomeIcon(selectedLogo), logoX + logoSize / 2, logoY + logoSize / 2);
-
-          // Replace QR code image with canvas
-          qrCodeDiv.innerHTML = '';
-          qrCodeDiv.appendChild(canvas);
-
-          // Unlock download and share buttons
-          downloadBtn.disabled = false;
-          shareBtn.disabled = false;
-
-          // Update download functionality
-          downloadBtn.onclick = function () {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'qrcode_with_logo.png';
-            link.click();
-          };
-
-          // Update share functionality
-          shareBtn.onclick = function () {
-            canvas.toBlob(function (blob) {
-              const file = new File([blob], 'qrcode_with_logo.png', { type: 'image/png' });
-              const shareData = {
-                files: [file],
-              };
-              if (navigator.canShare && navigator.canShare(shareData)) {
-                navigator.share(shareData)
-                  .then(() => console.log('QR code shared successfully'))
-                  .catch((error) => console.error('Error sharing QR code:', error));
-              } else {
-                alert('Sharing not supported in this browser.');
-              }
-            });
           };
         } else {
           // If no logo, show the QR code as is
