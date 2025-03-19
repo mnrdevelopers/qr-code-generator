@@ -13,22 +13,9 @@ document.getElementById('logo-upload').addEventListener('change', function (even
   }
 });
 
-// Automatically generate QR code when input changes
-document.getElementById('qr-input').addEventListener('input', function () {
-  generateQRCode();
-});
+let qrCodeInstance = null; // Variable to store the QRCode instance
 
-// Automatically generate QR code when color changes
-document.getElementById('color-picker').addEventListener('change', function () {
-  generateQRCode();
-});
-
-// Automatically generate QR code when logo is uploaded
-document.getElementById('logo-upload').addEventListener('change', function () {
-  generateQRCode();
-});
-
-function generateQRCode() {
+document.getElementById('generate-btn').addEventListener('click', function () {
   const input = document.getElementById('qr-input').value;
   const qrCodeDiv = document.getElementById('qr-code');
   const dummyQr = document.querySelector('.dummy-qr');
@@ -39,15 +26,17 @@ function generateQRCode() {
   const scanningAnimation = document.getElementById('scanning-animation');
 
   if (input.trim() === '') {
-    // Clear the QR code if input is empty
-    qrCodeDiv.innerHTML = '';
-    dummyQr.style.display = 'block';
-    downloadBtn.disabled = true;
-    shareBtn.disabled = true;
+    alert('Please enter text or a URL.');
     return;
   }
 
-  // Clear previous QR code
+  // Clear previous QR code instance
+  if (qrCodeInstance) {
+    qrCodeInstance.clear(); // Clear the existing QR code
+    qrCodeInstance = null; // Reset the instance
+  }
+
+  // Clear the QR code container
   qrCodeDiv.innerHTML = '';
 
   // Hide the dummy QR code
@@ -56,13 +45,16 @@ function generateQRCode() {
   // Show the scanning animation
   scanningAnimation.style.opacity = '1';
 
+  // Disable the generate button during the animation
+  this.disabled = true;
+
   // Wait for 5 seconds to simulate scanning
   setTimeout(() => {
     // Hide the scanning animation
     scanningAnimation.style.opacity = '0';
 
     // Generate QR code at fixed size (200x200)
-    const qr = new QRCode(qrCodeDiv, {
+    qrCodeInstance = new QRCode(qrCodeDiv, {
       text: input,
       width: 200,
       height: 200,
@@ -161,5 +153,8 @@ function generateQRCode() {
         }
       }
     }, 100); // Delay to ensure QR code is rendered
+
+    // Re-enable the generate button
+    document.getElementById('generate-btn').disabled = false;
   }, 3000); // 3-second delay for the scanning animation
-}
+});
