@@ -158,12 +158,12 @@ button:disabled {
 
 /* Dummy QR Code */
 .dummy-qr {
-  width: 90%;
-  height: 90%;
+  width: 85%;
+  height: 85%;
   filter: blur(0px); /* Add blur effect */
   position: absolute;
-  top: 15px;
-  left: 15px;
+  top: 10px;
+  left: 10px;
 }
 
 /* Actual QR Code */
