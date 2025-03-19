@@ -161,5 +161,5 @@ function generateQRCode() {
         }
       }
     }, 100); // Delay to ensure QR code is rendered
-  }, 5000); // 5-second delay for the scanning animation
+  }, 3000); // 3-second delay for the scanning animation
 }
