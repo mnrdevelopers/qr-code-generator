@@ -128,6 +128,7 @@ function generateQRCode(input, qrCodeDiv, color, logoFile, downloadBtn, shareBtn
 
 function generateBarcode(input, barcodeSvg, color, downloadBtn, shareBtn) {
   try {
+    // First generate the barcode to get its dimensions
     JsBarcode(barcodeSvg, input, {
       format: document.getElementById('barcode-type').value,
       lineColor: color,
@@ -137,21 +138,36 @@ function generateBarcode(input, barcodeSvg, color, downloadBtn, shareBtn) {
       margin: 10
     });
 
-    // Convert SVG to canvas for download and share
-    const svgData = new XMLSerializer().serializeToString(barcodeSvg);
+    // Get the actual width of the generated barcode
+    const barcodeWidth = barcodeSvg.getBoundingClientRect().width;
+    const barcodeHeight = barcodeSvg.getBoundingClientRect().height;
+
+    // Create a canvas with proper dimensions
     const canvas = document.createElement('canvas');
+    canvas.width = barcodeWidth;
+    canvas.height = barcodeHeight;
     const ctx = canvas.getContext('2d');
+
+    // Create an image from the SVG
+    const svgData = new XMLSerializer().serializeToString(barcodeSvg);
     const img = new Image();
 
     img.onload = function() {
-      canvas.width = barcodeSvg.clientWidth;
-      canvas.height = barcodeSvg.clientHeight;
-      ctx.drawImage(img, 0, 0);
+      // Draw the image on canvas
+      ctx.drawImage(img, 0, 0, barcodeWidth, barcodeHeight);
+      
+      // Set up download and share with the correct dimensions
       setupDownloadAndShare(canvas, downloadBtn, shareBtn, 'barcode.png');
+      
+      // Adjust container size to fit the barcode
+      const container = document.getElementById('code-container');
+      container.style.width = barcodeWidth + 'px';
+      container.style.height = barcodeHeight + 'px';
     };
 
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
     barcodeSvg.style.display = 'block';
+
   } catch (e) {
     alert('Invalid barcode data for selected type: ' + e.message);
     downloadBtn.disabled = true;
