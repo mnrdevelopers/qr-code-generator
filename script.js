@@ -13,11 +13,39 @@ document.getElementById('logo-upload').addEventListener('change', function (even
   }
 });
 
-let qrCodeInstance = null; // Variable to store the QRCode instance
+// Toggle between QR and Barcode options
+document.getElementById('code-type').addEventListener('change', function() {
+  const codeType = this.value;
+  const barcodeOptions = document.getElementById('barcode-options');
+  const qrColorGroup = document.getElementById('qr-color-group');
+  const logoUploadSection = document.getElementById('logo-upload-section');
+  const codeContainer = document.getElementById('code-container');
+  
+  if (codeType === 'barcode') {
+    barcodeOptions.style.display = 'block';
+    logoUploadSection.style.display = 'none';
+    codeContainer.classList.add('barcode-mode');
+    document.getElementById('barcode').style.display = 'block';
+    document.getElementById('qr-code').style.display = 'none';
+  } else {
+    barcodeOptions.style.display = 'none';
+    logoUploadSection.style.display = 'block';
+    codeContainer.classList.remove('barcode-mode');
+    document.getElementById('barcode').style.display = 'none';
+    document.getElementById('qr-code').style.display = 'block';
+  }
+});
+
+let qrCodeInstance = null;
 
 document.getElementById('generate-btn').addEventListener('click', function () {
-  const input = document.getElementById('qr-input').value;
+  const codeType = document.getElementById('code-type').value;
+  const input = codeType === 'qr' 
+    ? document.getElementById('qr-input').value 
+    : document.getElementById('barcode-input').value;
+  
   const qrCodeDiv = document.getElementById('qr-code');
+  const barcodeSvg = document.getElementById('barcode');
   const dummyQr = document.querySelector('.dummy-qr');
   const downloadBtn = document.getElementById('download-btn');
   const shareBtn = document.getElementById('share-btn');
@@ -26,135 +54,150 @@ document.getElementById('generate-btn').addEventListener('click', function () {
   const scanningAnimation = document.getElementById('scanning-animation');
 
   if (input.trim() === '') {
-    alert('Please enter text or a URL.');
+    alert(`Please enter ${codeType === 'qr' ? 'text or a URL' : 'barcode data (numbers)'}.`);
     return;
   }
 
-  // Clear previous QR code instance
+  // Clear previous instances
   if (qrCodeInstance) {
-    qrCodeInstance.clear(); // Clear the existing QR code
-    qrCodeInstance = null; // Reset the instance
+    qrCodeInstance.clear();
+    qrCodeInstance = null;
   }
-
-  // Clear the QR code container
   qrCodeDiv.innerHTML = '';
+  barcodeSvg.innerHTML = '';
 
   // Hide the dummy QR code
   dummyQr.style.display = 'none';
 
   // Show the scanning animation
   scanningAnimation.style.opacity = '1';
-
-  // Disable the generate button during the animation
   this.disabled = true;
 
-  // Wait for 5 seconds to simulate scanning
   setTimeout(() => {
-    // Hide the scanning animation
     scanningAnimation.style.opacity = '0';
 
-    // Generate QR code at fixed size (200x200)
-    qrCodeInstance = new QRCode(qrCodeDiv, {
-      text: input,
-      width: 200,
-      height: 200,
-      colorDark: color,
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.H,
+    if (codeType === 'qr') {
+      generateQRCode(input, qrCodeDiv, color, logoFile, downloadBtn, shareBtn);
+    } else {
+      generateBarcode(input, barcodeSvg, color, downloadBtn, shareBtn);
+    }
+
+    this.disabled = false;
+  }, 3000);
+});
+
+function generateQRCode(input, qrCodeDiv, color, logoFile, downloadBtn, shareBtn) {
+  qrCodeInstance = new QRCode(qrCodeDiv, {
+    text: input,
+    width: 200,
+    height: 200,
+    colorDark: color,
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H,
+  });
+
+  setTimeout(() => {
+    const qrImage = qrCodeDiv.querySelector('img');
+    if (qrImage) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 200;
+      canvas.height = 200;
+
+      ctx.drawImage(qrImage, 0, 0, 200, 200);
+
+      if (logoFile) {
+        const logo = new Image();
+        logo.src = URL.createObjectURL(logoFile);
+        logo.onload = () => {
+          const logoSize = 40;
+          const logoX = (200 - logoSize) / 2;
+          const logoY = (200 - logoSize) / 2;
+          ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+          qrCodeDiv.innerHTML = '';
+          qrCodeDiv.appendChild(canvas);
+          setupDownloadAndShare(canvas, downloadBtn, shareBtn, 'qrcode_with_logo.png');
+        };
+      } else {
+        qrCodeDiv.classList.add('show');
+        setupDownloadAndShare(qrImage, downloadBtn, shareBtn, 'qrcode.png');
+      }
+    }
+  }, 100);
+}
+
+function generateBarcode(input, barcodeSvg, color, downloadBtn, shareBtn) {
+  try {
+    JsBarcode(barcodeSvg, input, {
+      format: document.getElementById('barcode-type').value,
+      lineColor: color,
+      width: 2,
+      height: 100,
+      displayValue: true,
+      margin: 10
     });
 
-    // Wait for QR code to be generated
-    setTimeout(() => {
-      const qrImage = qrCodeDiv.querySelector('img');
-      if (qrImage) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 200;
-        canvas.height = 200;
+    // Convert SVG to canvas for download and share
+    const svgData = new XMLSerializer().serializeToString(barcodeSvg);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
 
-        // Draw QR code on canvas
-        ctx.drawImage(qrImage, 0, 0, 200, 200);
+    img.onload = function() {
+      canvas.width = barcodeSvg.clientWidth;
+      canvas.height = barcodeSvg.clientHeight;
+      ctx.drawImage(img, 0, 0);
+      setupDownloadAndShare(canvas, downloadBtn, shareBtn, 'barcode.png');
+    };
 
-        // Load logo (uploaded file)
-        if (logoFile) {
-          const logo = new Image();
-          logo.src = URL.createObjectURL(logoFile);
-          logo.onload = () => {
-            // Calculate logo size and position
-            const logoSize = 40; // Logo size is 20% of QR code size (200 * 0.2 = 40)
-            const logoX = (200 - logoSize) / 2;
-            const logoY = (200 - logoSize) / 2;
+    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    barcodeSvg.style.display = 'block';
+  } catch (e) {
+    alert('Invalid barcode data for selected type: ' + e.message);
+    downloadBtn.disabled = true;
+    shareBtn.disabled = true;
+  }
+}
 
-            // Draw logo on canvas
-            ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+function setupDownloadAndShare(element, downloadBtn, shareBtn, filename) {
+  downloadBtn.disabled = false;
+  shareBtn.disabled = false;
 
-            // Replace QR code image with canvas
-            qrCodeDiv.innerHTML = '';
-            qrCodeDiv.appendChild(canvas);
+  downloadBtn.onclick = function() {
+    const link = document.createElement('a');
+    if (element instanceof HTMLCanvasElement) {
+      link.href = element.toDataURL('image/png');
+    } else if (element instanceof HTMLImageElement || element instanceof SVGElement) {
+      link.href = element.src;
+    }
+    link.download = filename;
+    link.click();
+  };
 
-            // Unlock download and share buttons
-            downloadBtn.disabled = false;
-            shareBtn.disabled = false;
+  shareBtn.onclick = function() {
+    if (element instanceof HTMLCanvasElement) {
+      element.toBlob(function(blob) {
+        shareFile(blob, filename);
+      });
+    } else if (element instanceof HTMLImageElement) {
+      fetch(element.src)
+        .then(res => res.blob())
+        .then(blob => shareFile(blob, filename));
+    }
+  };
+}
 
-            // Update download functionality
-            downloadBtn.onclick = function () {
-              const link = document.createElement('a');
-              link.href = canvas.toDataURL('image/png');
-              link.download = 'qrcode_with_logo.png';
-              link.click();
-            };
-
-            // Update share functionality
-            shareBtn.onclick = function () {
-              canvas.toBlob(function (blob) {
-                const file = new File([blob], 'qrcode_with_logo.png', { type: 'image/png' });
-                const shareData = {
-                  files: [file],
-                };
-                if (navigator.canShare && navigator.canShare(shareData)) {
-                  navigator.share(shareData)
-                    .then(() => console.log('QR code shared successfully'))
-                    .catch((error) => console.error('Error sharing QR code:', error));
-                } else {
-                  alert('Sharing not supported in this browser.');
-                }
-              });
-            };
-          };
-        } else {
-          // If no logo, show the QR code as is
-          qrCodeDiv.classList.add('show');
-          downloadBtn.disabled = false;
-          shareBtn.disabled = false;
-
-          downloadBtn.onclick = function () {
-            const link = document.createElement('a');
-            link.href = qrImage.src;
-            link.download = 'qrcode.png';
-            link.click();
-          };
-
-          shareBtn.onclick = function () {
-            const link = document.createElement('a');
-            link.href = qrImage.src;
-            link.download = 'qrcode.png';
-            const file = new File([link.href], 'qrcode.png', { type: 'image/png' });
-            const shareData = {
-              files: [file],
-            };
-            if (navigator.canShare && navigator.canShare(shareData)) {
-              navigator.share(shareData)
-                .then(() => console.log('QR code shared successfully'))
-                .catch((error) => console.error('Error sharing QR code:', error));
-            } else {
-              alert('Sharing not supported in this browser.');
-            }
-          };
-        }
-      }
-    }, 100); // Delay to ensure QR code is rendered
-
-    // Re-enable the generate button
-    document.getElementById('generate-btn').disabled = false;
-  }, 3000); // 3-second delay for the scanning animation
-});
+function shareFile(blob, filename) {
+  const file = new File([blob], filename, { type: 'image/png' });
+  const shareData = {
+    files: [file],
+  };
+  
+  if (navigator.canShare && navigator.canShare(shareData)) {
+    navigator.share(shareData)
+      .then(() => console.log('Code shared successfully'))
+      .catch((error) => console.error('Error sharing code:', error));
+  } else {
+    alert('Sharing not supported in this browser.');
+  }
+}
