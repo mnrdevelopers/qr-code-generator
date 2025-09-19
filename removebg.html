@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Background Remover</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Instructions</h2>
+      <ul>
+        <li>Select an image using 'Choose File'.</li>
+        <li>Click 'Remove Background' to make the image transparent.</li>
+        <li>Use the color palette to pick a new background color.</li>
+        <li>Click 'Download' to save your image with the selected background!</li>
+      </ul>
+    </aside>
+    <main class="main-content">
+      <h1>Image Background Remover</h1>
+      <div class="input-file">
+        <label for="userImg">Choose File</label>
+        <input type="file" id="userImg" required>
+      </div>
+      <div class="preview-row">
+        <div id="imagePreview" class="image-preview"></div>
+        <div id="bgRemove" class="image-preview"></div>
+      </div>
+      <div class="controls">
+        <label for="colorPicker">Change BG Color:</label>
+        <input type="color" id="colorPicker" value="#ffffff">
+        <button id="removeBackground" class="btn-primary">Remove Background</button>
+      </div>
+      <button id="downloadButton" class="btn-download" style="display:none;">Download</button>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
