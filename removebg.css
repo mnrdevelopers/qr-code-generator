@@ -1,0 +1,131 @@
+body {
+  background: linear-gradient(135deg, #e0ebfc 0%, #f2fafc 100%);
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  margin: 40px auto;
+  max-width: 900px;
+  min-height: 500px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(60,120,230,0.12);
+  overflow: hidden;
+}
+
+.sidebar {
+  background: #f6fafe;
+  width: 300px;
+  padding: 40px 30px;
+  border-right: 2px solid #e2eefa;
+}
+
+.sidebar h2 {
+  color: #3757d0;
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: disc;
+  padding-left: 20px;
+  color: #234;
+  line-height: 1.6;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  margin-bottom: 18px;
+  letter-spacing: 2px;
+  font-size: 2rem;
+  color: #3757d0;
+}
+
+.input-file label {
+  font-weight: 500;
+  margin-right: 8px;
+  color: #3757d0;
+}
+
+.input-file input[type="file"] {
+  border: none;
+  background: #eee;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.preview-row {
+  display: flex;
+  gap: 30px;
+  margin: 28px 0;
+}
+
+.image-preview {
+  border: 2px solid #e2eefa;
+  border-radius: 12px;
+  background: #fafcff;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+#colorPicker {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: #f6fafe;
+}
+
+.btn-primary, .btn-download {
+  background-color: #3757d0;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover, .btn-download:hover {
+  background-color: #2853a6;
+}
+
+.btn-download {
+  background-color: #1dc248;
+}
+
+@media (max-width: 900px) {
+  .container { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 2px solid #e2eefa;}
+  .main-content { padding: 30px 16px; }
+  .preview-row { gap: 14px; }
+}
+
