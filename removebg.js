@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const bgRemove = document.getElementById('bgRemove');
   const downloadButton = document.getElementById('downloadButton');
   const bgOption = document.getElementById('bgOption');
+  const loadingOverlay = document.getElementById('loadingOverlay');
 
   let processedImgUrl = null;
 
@@ -26,6 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
   removeBackgroundButton.addEventListener('click', async function () {
     const file = inputField.files[0];
     if (!file) return;
+
+    loadingOverlay.style.display = "flex";
     const formData = new FormData();
     formData.append('image_file', file);
 
@@ -44,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
       processedImgUrl = URL.createObjectURL(result);
       bgRemove.innerHTML = `<img id="outputImg" src="${processedImgUrl}" alt="Removed Background" />`;
 
+      // Animation: fade in image
+      const outputImg = bgRemove.querySelector("#outputImg");
+      outputImg.style.opacity = 0;
+      setTimeout(() => { outputImg.style.opacity = 1; }, 100);
+
       // Set preview background according to selected option
       if (bgOption.value === 'transparent') {
         bgRemove.style.backgroundColor = 'transparent';
@@ -56,10 +64,11 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Error removing background:', error);
       bgRemove.innerHTML = "<span style='color:red;'>Error removing background!</span>";
       downloadButton.style.display = 'none';
+    } finally {
+      loadingOverlay.style.display = "none";
     }
   });
 
-  // Change preview background color when user selects a new option
   bgOption.addEventListener('change', function () {
     if (bgOption.value === 'transparent') {
       bgRemove.style.backgroundColor = 'transparent';
@@ -68,7 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Handle download, applying background color or transparency in canvas
   downloadButton.addEventListener('click', function (e) {
     e.preventDefault();
     const outputImg = bgRemove.querySelector('#outputImg');
