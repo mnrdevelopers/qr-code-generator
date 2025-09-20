@@ -11,7 +11,7 @@ body {
   min-height: 500px;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(60,120,230,0.12);
+  box-shadow: 0 8px 32px rgba(60, 120, 230, 0.12);
   overflow: hidden;
 }
 
@@ -55,7 +55,7 @@ h1 {
   color: #3757d0;
 }
 
-.input-file input[type="file"] {
+.input-file input[type='file'] {
   border: none;
   background: #eee;
   padding: 8px;
@@ -93,15 +93,17 @@ h1 {
   margin-bottom: 20px;
 }
 
-#colorPicker {
-  width: 36px;
-  height: 36px;
-  border: none;
+select#bgOption {
+  font-size: 16px;
+  padding: 6px 8px;
   border-radius: 8px;
+  border: 1px solid #ddd;
   background: #f6fafe;
+  color: #234;
 }
 
-.btn-primary, .btn-download {
+.btn-primary,
+.btn-download {
   background-color: #3757d0;
   color: #fff;
   border: none;
@@ -114,7 +116,8 @@ h1 {
   transition: background 0.2s;
 }
 
-.btn-primary:hover, .btn-download:hover {
+.btn-primary:hover,
+.btn-download:hover {
   background-color: #2853a6;
 }
 
@@ -123,9 +126,18 @@ h1 {
 }
 
 @media (max-width: 900px) {
-  .container { flex-direction: column; }
-  .sidebar { width: 100%; border-right: none; border-bottom: 2px solid #e2eefa;}
-  .main-content { padding: 30px 16px; }
-  .preview-row { gap: 14px; }
+  .container {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid #e2eefa;
+  }
+  .main-content {
+    padding: 30px 16px;
+  }
+  .preview-row {
+    gap: 14px;
+  }
 }
-
