@@ -4,22 +4,21 @@ document.addEventListener('DOMContentLoaded', function () {
   const imagePreview = document.getElementById('imagePreview');
   const bgRemove = document.getElementById('bgRemove');
   const downloadButton = document.getElementById('downloadButton');
-  const colorPicker = document.getElementById('colorPicker');
+  const bgOption = document.getElementById('bgOption');
 
   let processedImgUrl = null;
-  let originalOutputBlob = null;
 
   inputField.addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function (e) {
-      imagePreview.innerHTML = `<img src="${e.target.result}" alt="Original">`;
+      imagePreview.innerHTML = `<img src="${e.target.result}" alt="Original" />`;
       bgRemove.innerHTML = '';
       downloadButton.style.display = 'none';
       processedImgUrl = null;
-      originalOutputBlob = null;
       bgRemove.style.backgroundColor = '#fafcff';
+      bgOption.value = 'transparent';
     };
     reader.readAsDataURL(file);
   });
@@ -34,16 +33,24 @@ document.addEventListener('DOMContentLoaded', function () {
       const response = await fetch('https://api.remove.bg/v1.0/removebg', {
         method: 'POST',
         headers: {
-          'X-Api-Key': 'v1A4eZgNXeDcmJnFH1asWxkS', // Replace with your remove.bg API key
+          'X-Api-Key': 'YOUR_API_KEY', // Replace with your remove.bg API Key
         },
         body: formData,
       });
+
       if (!response.ok) throw new Error('API error');
+
       const result = await response.blob();
       processedImgUrl = URL.createObjectURL(result);
-      originalOutputBlob = result;
-      bgRemove.innerHTML = `<img id="outputImg" src="${processedImgUrl}" alt="Removed Background">`;
-      bgRemove.style.backgroundColor = colorPicker.value;
+      bgRemove.innerHTML = `<img id="outputImg" src="${processedImgUrl}" alt="Removed Background" />`;
+
+      // Set preview background according to selected option
+      if (bgOption.value === 'transparent') {
+        bgRemove.style.backgroundColor = 'transparent';
+      } else {
+        bgRemove.style.backgroundColor = bgOption.value;
+      }
+
       downloadButton.style.display = 'inline-block';
     } catch (error) {
       console.error('Error removing background:', error);
@@ -52,40 +59,44 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  colorPicker.addEventListener('input', function () {
-    const outputImg = bgRemove.querySelector("#outputImg");
-    if (outputImg) {
-      bgRemove.style.backgroundColor = colorPicker.value;
+  // Change preview background color when user selects a new option
+  bgOption.addEventListener('change', function () {
+    if (bgOption.value === 'transparent') {
+      bgRemove.style.backgroundColor = 'transparent';
+    } else {
+      bgRemove.style.backgroundColor = bgOption.value;
     }
   });
 
+  // Handle download, applying background color or transparency in canvas
   downloadButton.addEventListener('click', function (e) {
     e.preventDefault();
-    const outputImg = bgRemove.querySelector("#outputImg");
+    const outputImg = bgRemove.querySelector('#outputImg');
     if (!outputImg) return;
 
-    // Create canvas the size of the image
-    const img = new window.Image();
-    img.crossOrigin = "anonymous";
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
     img.onload = function () {
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
       const ctx = canvas.getContext('2d');
 
-      // Fill canvas with selected background color
-      ctx.fillStyle = colorPicker.value;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (bgOption.value !== 'transparent') {
+        ctx.fillStyle = bgOption.value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
 
-      // Draw the transparent processed image on top
       ctx.drawImage(img, 0, 0);
 
-      // Create a download link from the canvas
       const link = document.createElement('a');
-      link.download = 'background_changed_image.png';
+      link.download = 'image.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
     };
+
     img.src = outputImg.src;
   });
 });
