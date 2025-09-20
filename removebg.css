@@ -20,11 +20,16 @@ body {
   width: 300px;
   padding: 40px 30px;
   border-right: 2px solid #e2eefa;
+  animation: fadeInLeft 1s;
 }
 
 .sidebar h2 {
   color: #3757d0;
   margin-bottom: 20px;
+  transition: color 0.25s;
+}
+.sidebar h2:hover {
+  color: #2853a6;
 }
 
 .sidebar ul {
@@ -40,6 +45,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  animation: fadeIn 1s;
 }
 
 h1 {
@@ -47,12 +54,20 @@ h1 {
   letter-spacing: 2px;
   font-size: 2rem;
   color: #3757d0;
+  transition: text-shadow 0.3s;
+}
+h1:hover {
+  text-shadow: 0 2px 12px #2853a693;
 }
 
 .input-file label {
   font-weight: 500;
   margin-right: 8px;
   color: #3757d0;
+  transition: color 0.25s;
+}
+.input-file label:hover {
+  color: #1dc248;
 }
 
 .input-file input[type='file'] {
@@ -60,6 +75,10 @@ h1 {
   background: #eee;
   padding: 8px;
   border-radius: 6px;
+  transition: background 0.25s;
+}
+.input-file input[type='file']:hover {
+  background: #d5eafd;
 }
 
 .preview-row {
@@ -79,11 +98,19 @@ h1 {
   justify-content: center;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 2px 18px #3757d012;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.image-preview:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 32px #1dc24833;
 }
 
 .image-preview img {
   max-width: 100%;
   max-height: 100%;
+  opacity: 0;
+  animation: fadeInImage 1.1s forwards;
 }
 
 .controls {
@@ -100,6 +127,11 @@ select#bgOption {
   border: 1px solid #ddd;
   background: #f6fafe;
   color: #234;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+select#bgOption:hover {
+  border-color: #1dc248;
+  box-shadow: 0 2px 12px #1dc24822;
 }
 
 .btn-primary,
@@ -113,17 +145,71 @@ select#bgOption {
   cursor: pointer;
   margin-right: 10px;
   margin-top: 8px;
-  transition: background 0.2s;
+  box-shadow: 0 2px 12px #3757d044;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-primary:hover,
 .btn-download:hover {
-  background-color: #2853a6;
+  background-color: #1dc248;
+  transform: scale(1.05);
+  box-shadow: 0 8px 28px #1dc24844;
 }
 
 .btn-download {
   background-color: #1dc248;
 }
+
+.loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(60,120,230,0.11);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.4s linear;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 6px solid #e2eefa;
+  border-top: 6px solid #1dc248;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+.loading-text {
+  color: #3757d0;
+  font-size: 1.18rem;
+  letter-spacing: 1px;
+  animation: pulse 1.7s infinite;
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-40px);}
+  to { opacity: 1; transform: translateX(0);}
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1;}
+}
+@keyframes fadeInImage {
+  from { opacity: 0; }
+  to { opacity: 1;}
+}
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+@keyframes pulse {
+  0% { opacity: 0.7;}
+  50% { opacity: 1;}
+  100% { opacity: 0.7;}
+}
+
 
 @media (max-width: 900px) {
   .container {
@@ -141,3 +227,4 @@ select#bgOption {
     gap: 14px;
   }
 }
+
