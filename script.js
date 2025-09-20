@@ -1,3 +1,26 @@
+// Navigation functionality
+const hamburger = document.querySelector(".hamburger");
+const navMenu = document.querySelector(".nav-menu");
+
+hamburger.addEventListener("click", () => {
+  hamburger.classList.toggle("active");
+  navMenu.classList.toggle("active");
+});
+
+document.querySelectorAll(".nav-link").forEach(n => n.addEventListener("click", () => {
+  hamburger.classList.remove("active");
+  navMenu.classList.remove("active");
+  
+  // Remove active class from all links
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.classList.remove("active");
+  });
+  
+  // Add active class to clicked link
+  event.target.classList.add("active");
+}));
+
+// File upload functionality
 document.getElementById('upload-btn').addEventListener('click', function () {
   document.getElementById('logo-upload').click();
 });
